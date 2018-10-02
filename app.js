@@ -128,6 +128,7 @@ app.get("/about", (req, res) => {
     }
 })
 
+//signing up
 app.get("/signup", (req, res) => {
     res.render("signup")
 })
@@ -141,9 +142,53 @@ app.get("/signupeigenaar", (req, res) => {
 })
 
 app.post("/signupeigenaar", (req, res) => {
-    console.log(req.body)
-    console.log(req)
     Eigenaars.findOne({
+        where: {
+            gebruikersnaam: req.body.gebruikersnaam
+        }
+    })
+    .then((result) => {
+        if (result === null) {
+            let hash = bcrypt.hashSync(req.body.wachtwoord, saltRounds);
+            Oppassers.create({
+                naam: req.body.voorachternaam,
+                email: req.body.email,
+                gebruikersnaam: req.body.gebruikersnaam,
+                wachtwoord: hash,
+                ervaring: req.body.ervaing,
+                uurtarief: req.body.uuratief,
+                locatie: req.body.locatie,
+                reizen: req.body.reizen,
+                kmvergoeding: req.body.kmvergoeding,
+                referenties: req.body.referenties,
+                biografie: req.body.biografie,
+                werkwijze: req.body.werkwijze,
+                voorwaarden: req.body.voorwaarden,
+                overig: req.body.overig
+            })
+            .then((user) => {
+                if (req.files.profilepic) {
+                    let picture = req.files.profilepic;
+                    picture.mv(__dirname + '/public/images/' + user.gebruikersnaam + '.jpg', function(err) {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                        console.log('hello')
+                        }
+                    })
+                }
+                req.session.user = user;
+                res.send("Loggedin!")
+            })
+            .catch(err => console.error('Error', err.stack))
+        } else {
+            res.send("booo user name already taken")
+        }
+    })
+}) 
+
+app.post("/signupoppas", (req, res) => {
+    Oppassers.findOne({
         where: {
             gebruikersnaam: req.body.gebruikersnaam
         }
