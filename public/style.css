@@ -1,0 +1,28 @@
+html {
+	height: 100%;
+}
+
+body {
+	background: url("https://images.unsplash.com/photo-1507150823660-eed1895c23c7?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=016b833109416ed8f1d16c6baf887b25&auto=format&fit=crop&w=1650&q=80");
+	background-size: cover;
+	background-position: center;
+	font-family: "Lato", sans-serif;
+}
+
+.jumbotron {
+	margin-top: 20%;
+	background-color: rgb(249,249,249);
+}
+
+.signups {
+	margin-top: 20%;
+	text-align: center;
+}
+
+.signupform {
+	padding: 20px;
+	border-radius: 6px;
+	color: #343a40;
+	margin-top: 10%;
+	background-color: rgb(249,249,249)
+}

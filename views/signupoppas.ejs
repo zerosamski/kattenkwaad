@@ -1,0 +1,134 @@
+<html>
+
+	<head>
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+		<title>
+			Kattenkwaad
+		</title>
+		<link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="homestyle.css">
+
+	</head>
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<div class="container">
+			<a class="navbar-brand" href="#">Kattenkwaad</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	  		<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    		<ul class="navbar-nav mr-auto">
+	    			<li class="nav-item active">
+	      				<a class="nav-link" href="#">Home</a>
+	   				</li>
+	   				<li class="nav-item">
+	      				<a class="nav-link" href="/about">About</a>
+	    			</li>
+	  			</ul>
+	    		<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link mr-sm-2" href="/signup">Sign up <i class="fas fa-user-plus"></i></a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Log in <i class="fas fa-user"></i></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<form action='/signupeigenaar' method="POST" class="signupform">
+                        <div class="form-group">
+                            <label for="name">Naam</label>
+                            <input type="text" name="voorachternaam" class="form-control" id="name" placeholder="Voornaam Achternaam">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email adres</label>
+                            <input type="email" name="email" class="form-control" id="email" placeholder="naam@voorbeeld.com">
+                        </div>
+                        <form>
+                        <div class="form-group">
+                            <label for="profilepic">Foto</label>
+                            <input type="file" name="profilepic" class="form-control-file" id="profilepic">
+                        </div>
+						 <div class="form-group">
+                            <label for="username">Gebruikersnaam</label>
+                            <input type="text" name="gebruikersnaam" class="form-control" id="username" placeholder="Gebruikersnaam">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Wachtwoord</label>
+                            <input type="password" name="wachtwoord" class="form-control" id="password" placeholder="*******">
+                        </div>
+                        <div class="form-group">
+                            <label for="ervaring">Aantal jaren ervaring</label>
+                            <select name="ervaring" class="form-control" id="ervaring">
+                            <option>Minder dan één jaar</option>
+                            <option>Tussen de 1 en 5</option>
+							<option>Meer dan 5 jaar</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="uurtarief">Uurtarief</label>
+                            <input type="number" name="uurtarief" step="0.25" class="form-control" id="uurtarief" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="locatie">Locatie </label>
+                            <input type="text" name="locatie" class="form-control" id="locatie" placeholder="Stad">
+                        </div>
+                        <div class="form-group">
+                            <label for="reizen">Aantal km bereid om te reizen  </label>
+                            <input type="number" name="reizen" class="form-control" id="reizen" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="kmvergoeding">Kilometervergoeding per km</label>
+                            <input type="number" name="kmvergoeding" step="0.05" class="form-control" id="kmvergoeding" min="0">
+                        </div>
+						<div class="form-group">
+                            <label for="binnenbuiten">Referenties beschikbaar </label>
+                            <select name="ingeent" class="form-control" id="binnenbuiten">
+                            <option>Ja</option>
+                            <option>Nee</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bio">Korte biografie </label>
+                            <textarea name="biografie" class="form-control" id="biografie" rows="3" placeholder="Wie ben je? Waarom ben je kattenoppas geworden?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="werkwijze">Werkwijze </label>
+                            <textarea name="werkwijze" class="form-control" id="werkwijze" rows="3" placeholder="Bijvoorbeeld: hoe vaak en hoe lang kom je langs? Wat doe je tijdens het opassen?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="voorwaarden">Oppas voorwaarden </label>
+                            <textarea name="voorwaarden" class="form-control" id="voorwaarden" rows="3" placeholder="Denk aan: moet een kat ingeënt/ontwormd zijn? Wat moet er in huis zijn tijdens het opassen?"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="overig">Overig </label>
+                            <textarea name="overig" class="form-control" id="overig" rows="3" placeholder="Overig"></textarea>
+                        </div>
+                        
+						<div class="control">
+							<button type="submit" class="btn btn-dark btn-md">
+								Submit
+							</button>
+						</div>
+                    </form>
+				</div>
+			</div>
+		</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.js"></script>
+	</body>
+
+
+</html>
