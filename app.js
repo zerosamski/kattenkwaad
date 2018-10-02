@@ -7,6 +7,7 @@ const Sequelize = require('sequelize');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
+const fileUpload = require('express-fileupload');
 
 //configuring modules
 app = express();
@@ -14,12 +15,16 @@ app.set("view engine", "ejs")
 
 app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(fileUpload());
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
   storage: "./session.postgres",
   host: process.env.DB_HOST,
   dialect: 'postgres',
   operatorsAliases: false
+})
+
+sequelize.sync({force: true}).then(() => {
 })
 
 //model definitions
@@ -37,7 +42,7 @@ const Eigenaars = sequelize.define('eigenaars', {
         type: Sequelize.STRING
     },
     aantalkatten: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
     },
     naarbuiten: {
         type: Sequelize.STRING
@@ -50,7 +55,7 @@ const Eigenaars = sequelize.define('eigenaars', {
     }
 });
 
-const Oppassers = sequelize.define('eigenaars', {
+const Oppassers = sequelize.define('oppassers', {
     naam: {
         type: Sequelize.STRING
     },
@@ -95,9 +100,6 @@ const Oppassers = sequelize.define('eigenaars', {
     }
 });
 
-sequelize.sync({force: true}).then(() => {
-})
-
 //set up sessions
 app.use(session({
     secret: "canihazcheeseburger",
@@ -139,6 +141,8 @@ app.get("/signupeigenaar", (req, res) => {
 })
 
 app.post("/signupeigenaar", (req, res) => {
+    console.log(req.body)
+    console.log(req)
     Eigenaars.findOne({
         where: {
             gebruikersnaam: req.body.gebruikersnaam
@@ -160,7 +164,7 @@ app.post("/signupeigenaar", (req, res) => {
             .then((user) => {
                 if (req.files.profilepic) {
                     let picture = req.files.profilepic;
-                    picture.mv(__dirname + '/public/images/' + user.userName + '.jpg', function(err) {
+                    picture.mv(__dirname + '/public/images/' + user.gebruikersnaam + '.jpg', function(err) {
                         if (err) {
                             console.log(err)
                         } else {
