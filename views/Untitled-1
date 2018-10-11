@@ -1,0 +1,86 @@
+ Oppassers.findAll()
+    .then((sitters) => {
+        let alldistances = locationsFinder(sitters, user.woonplaats, callback)
+        
+        res.render("sitterslocation", {user: user, sitters: sitters, alldistances: alldistances})
+    })
+})
+
+
+ // This module should have a function that takes in a filename and a callback function as a parameter. 
+
+module.exports = function (siTters, woonPlaats, callback) {
+	const request = require('request');
+ 	let woonplaats = woonPlaats;
+ 	let sitters = siTters;
+ 	let distances = [];
+// get distances
+	sitters.forEach(function(sitter) {
+            search = `https://www.distance24.org/route.json?stops=${woonplaats}|${sitter.locatie}`
+            request(search, function (err, response, body) {
+                if (err){
+                    console.log('error:', error);
+                    }  
+                    var result = JSON.parse(body)
+                    distances.push(result.distance)  
+                    
+                   	callback(distances) 
+                })
+            })
+
+	}
+
+
+
+
+    ppassers.findAll()
+    .then((sitters) => {
+        sitters.forEach(function(sitter) {
+            // let distances = locationsFinder(sitter.locatie, user.woonplaats, callback);
+            // setTimeout(() => {
+            //     console.log(distances)
+            // }, 1000);
+            Oppassers.update({
+                temploc: locationsFinder(sitter.locatie, user.woonplaats, callback)
+            }, {
+                where: {
+                    id: sitter.id
+                }
+            })
+        })
+    })
+            .then((sitters2) => {
+                res.render("sitterslocation", {user: user, sitters: sitters2})
+    })
+})
+
+
+////
+
+  let distances = [];
+
+    Oppassers.findAll()
+    .then((sitters) => {
+        distances2 = sitters.map(function(sitter) {
+            search = `https://www.distance24.org/route.json?stops=${sitter.locatie}|${user.woonplaats}`
+            request(search, function (err, response, body) {
+                if (err){
+                    console.log('error:', error);
+                }  
+                var result = JSON.parse(body)
+                console.log(result.distances)
+                return result.distance
+               
+            })
+        })
+        console.log(distances2)
+    })
+    .then((distancesfinal) => {
+        console.log(distancesfinal)
+        return Oppassers.findAll()
+    })
+    .then((sitters) => {
+        res.render("sitterslocation", {user: user, sitters: sitters, distances: distances})
+    })
+    .catch(err => console.error('Error', err.stack))
+})
