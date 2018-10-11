@@ -1,5 +1,6 @@
 //requiring modules
 require('dotenv').config()
+const request = require('request');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -8,11 +9,11 @@ const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
 const fileUpload = require('express-fileupload');
+const locationsFinder = require('./locationfinder.js')
 
 //configuring modules
 app = express();
 app.set("view engine", "ejs")
-
 app.use(express.static("public"))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(fileUpload());
@@ -24,7 +25,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
   operatorsAliases: false
 })
 
-sequelize.sync({force: true}).then(() => {
+sequelize.sync({force: false}).then(() => {
 })
 
 //model definitions
@@ -41,13 +42,7 @@ const Eigenaars = sequelize.define('eigenaars', {
     wachtwoord: {
         type: Sequelize.STRING
     },
-    aantalkatten: {
-        type: Sequelize.STRING
-    },
-    naarbuiten: {
-        type: Sequelize.STRING
-    },
-    ingeent: {
+    woonplaats: {
         type: Sequelize.STRING
     },
     overig: {
@@ -72,16 +67,16 @@ const Oppassers = sequelize.define('oppassers', {
         type: Sequelize.STRING
     },
     uurtarief: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
     },
-    locatie: {
+    woonplaats: {
         type: Sequelize.STRING
     },
     reizen: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
     },
     kmvergoeding: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
     },
     referenties: {
         type: Sequelize.STRING
@@ -97,6 +92,9 @@ const Oppassers = sequelize.define('oppassers', {
     },
     overig: {
         type: Sequelize.TEXT
+    },
+    temploc: {
+        type: Sequelize.FLOAT
     }
 });
 
@@ -116,7 +114,7 @@ app.get("/", (req, res) => {
     if (req.session.user === undefined) {
         res.render("home")
     } else {
-        res.send("Hello you're logged in")
+       res.redirect("/user")
     }
 })
 
@@ -124,7 +122,7 @@ app.get("/about", (req, res) => {
     if (req.session.user === undefined) {
         res.render("about")
     } else {
-        res.send("Hello you're not")
+        res.render("aboutloggedin")
     }
 })
 
@@ -141,8 +139,9 @@ app.get("/signupeigenaar", (req, res) => {
     res.render("signupeigenaar")
 })
 
-app.post("/signupeigenaar", (req, res) => {
-    Eigenaars.findOne({
+app.post("/signupoppas", (req, res) => {
+    console.log(req.body)
+    Oppassers.findOne({
         where: {
             gebruikersnaam: req.body.gebruikersnaam
         }
@@ -155,9 +154,9 @@ app.post("/signupeigenaar", (req, res) => {
                 email: req.body.email,
                 gebruikersnaam: req.body.gebruikersnaam,
                 wachtwoord: hash,
-                ervaring: req.body.ervaing,
-                uurtarief: req.body.uuratief,
-                locatie: req.body.locatie,
+                ervaring: req.body.ervaring,
+                uurtarief: req.body.uurtarief,
+                woonplaats: req.body.locatie,
                 reizen: req.body.reizen,
                 kmvergoeding: req.body.kmvergoeding,
                 referenties: req.body.referenties,
@@ -187,8 +186,8 @@ app.post("/signupeigenaar", (req, res) => {
     })
 }) 
 
-app.post("/signupoppas", (req, res) => {
-    Oppassers.findOne({
+app.post("/signupeigenaar", (req, res) => {
+    Eigenaars.findOne({
         where: {
             gebruikersnaam: req.body.gebruikersnaam
         }
@@ -201,9 +200,7 @@ app.post("/signupoppas", (req, res) => {
                 email: req.body.email,
                 gebruikersnaam: req.body.gebruikersnaam,
                 wachtwoord: hash,
-                aantalkatten: req.body.aantalkatten,
-                naarbuiten: req.body.binnenbuiten,
-                ingeent: req.body.ingeent,
+                woonplaats: req.body.woonplaats,
                 overig: req.body.overig,
             })
             .then((user) => {
@@ -227,7 +224,100 @@ app.post("/signupoppas", (req, res) => {
     })
 }) 
 
+//viewing the catsitters
+app.get('/oppassers', (req, res) => {
+    if (req.session.user === undefined) {
+        res.redirect("/signup")
+    }
+    
+    Oppassers.findAll()
+    .then((sitters) => {
+        res.render("sitters", {sitters: sitters})
+    })
+    .catch(err => console.error('Error', err.stack))
+})
+
+
+//view individual catsitterxs
+app.get("/oppassers/:id", (req, res) => {
+    let user = req.session.user
+    Oppassers.findById(req.params.id)
+        .then((sitter) => {
+            res.render("sitterprofile", {sitter: sitter, user: user})
+            })
+        .catch(err => console.error('Error', err.stack))
+        
+    }) 
+
+app.get("/user", (req, res) => {
+    Oppassers.findOne({ where: {gebruikersnaam: req.session.user.gebruikersnaam} })
+    .then((sitter) => {
+        if (sitter) {
+            res.render("sitterprofile", {sitter: sitter})
+        } else {
+            Eigenaars.findOne({ where: {gebruikersnaam: req.session.user.gebruikersnaam} })
+            .then((owner) => {
+                if (owner) {
+                    res.render("ownerprofile", {owner: owner})
+                }
+            })
+        }
+    })
+})
+
+function callback(data) {
+    let distances = data;
+    return distances
+} 
+
+//filtered by location sitters
+app.get('/oppasserslocatie', (req, res) => {
+    let user = req.session.user;
+    let distances = [];
+
+    Oppassers.findAll()
+    .then((sitters) => {
+        distances2 = sitters.forEach(function(sitter) {
+            search = `https://www.distance24.org/route.json?stops=${sitter.woonplaats}|${user.woonplaats}`
+            request(search, function (err, response, body) {
+                if (err){
+                    console.log('error:', error);
+                }  
+                var result = JSON.parse(body)
+                console.log(result.distances)
+                Oppassers.update({
+                    temploc: result.distance
+                }, {
+                    where: {
+                        id: sitter.id
+                    }
+                })               
+            })
+        })
+    })
+    .then(() => {
+        return Oppassers.findAll()
+    })
+    .then((sitters) => {
+        res.render("sitterslocation", {user: user, sitters: sitters})
+    })
+    .catch(err => console.error('Error', err.stack))
+})
+
+
+
+
+
+
+//logging out
+app.get('/logout', (req, res) => {
+    req.session.destroy() 
+    .then(res.redirect("/"))
+    .catch(err => console.error('Error', err.stack))
+})
 
 app.listen(3000, () => {
     console.log("Server is listening on port 3000")
 })
+
+
