@@ -20,17 +20,17 @@ _01/12/2017_
 
 
 _02/10/2018_
-Added profile pic functionality
-Finalised sign up page
+- Added profile pic functionality
+- Finalised sign up page
 
 _11/10/2018_
-Added a location filter
+- Added a location filter
 
 19/10/2018_
-Login functionality added
+- Login functionality added
 
 _22/10/2018_
-Added jQuery price filter
+- Added jQuery price filter
 
 
 
