@@ -112,15 +112,16 @@ app.use(session({
 //homepage
 app.get("/", (req, res) => {
     if (req.session.user === undefined) {
-        res.render("home")
+        res.render("home", {message: ""})
     } else {
-       res.redirect("/user")
+       res.render("homeloggedin", {message: ""})
     }
 })
 
+//about
 app.get("/about", (req, res) => {
     if (req.session.user === undefined) {
-        res.render("about")
+        res.render("about", {message: ""})
     } else {
         res.render("aboutloggedin")
     }
@@ -128,15 +129,15 @@ app.get("/about", (req, res) => {
 
 //signing up
 app.get("/signup", (req, res) => {
-    res.render("signup")
+    res.render("signup", {message: ""})
 })
 
 app.get("/signupoppas", (req, res) => {
-    res.render("signupoppas")
+    res.render("signupoppas", {message: ""})
 })
 
 app.get("/signupeigenaar", (req, res) => {
-    res.render("signupeigenaar")
+    res.render("signupeigenaar", {message: ""})
 })
 
 app.post("/signupoppas", (req, res) => {
@@ -224,6 +225,39 @@ app.post("/signupeigenaar", (req, res) => {
     })
 }) 
 
+//loggin in
+app.post('/login', (req, res) => {
+      
+    Eigenaars.findOne({
+        where: {
+        email: req.body.email
+        }
+    })
+    .then((user) => {
+        if (user !== null && bcrypt.compareSync(req.body.wachtwoord, user.wachtwoord)) {
+            req.session.user = user;
+            res.redirect('/oppassers');
+        } else if (user === null) {
+            Oppassers.findOne({
+                where: {
+                email: req.body.email
+                }
+            })
+            .then((user2) => {
+                if (user2 !== null && bcrypt.compareSync(req.body.wachtwoord, user.wachtwoord)) {
+                    req.session.user = user2;
+                    res.redirect('/user');
+                } else {
+                    res.render("home", {message: "Error, cannot log you in!"})
+                }
+            })
+        }
+    })
+})
+   
+
+
+
 //viewing the catsitters
 app.get('/oppassers', (req, res) => {
     if (req.session.user === undefined) {
@@ -304,15 +338,10 @@ app.get('/oppasserslocatie', (req, res) => {
     .catch(err => console.error('Error', err.stack))
 })
 
-
-
-
-
-
 //logging out
 app.get('/logout', (req, res) => {
     req.session.destroy() 
-    .then(res.redirect("/"))
+    .then(res.render("home"))
     .catch(err => console.error('Error', err.stack))
 })
 
