@@ -29,8 +29,16 @@
 	    			</li>
 	  			</ul>
 	    		<ul class="navbar-nav ml-auto">
-					<li class="nav-item">
-						<a class="nav-link mr-sm-2" href="/oppassers">Kattenoppassers</i></a>
+					<!-- Dropdown menu -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Filter
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#">Prijs p/u tot:  <input class="form-control-inline form-control-sm" id="prijspu" type="text"></a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/oppassers">Toon alle</a>
+						</div>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link mr-sm-2" href="/user">Mijn profiel</a>

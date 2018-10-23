@@ -24,7 +24,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    		<ul class="navbar-nav mr-auto">
 	    			<li class="nav-item">
-	      				<a class="nav-link" href="#">Home</a>
+	      				<a class="nav-link" href="/">Home</a>
 	   				</li>
 	   				<li class="nav-item">
 	      				<a class="nav-link" href="/about">Over Kattenkwaad</a>
@@ -34,8 +34,21 @@
 					<li class="nav-item active">
 						<a class="nav-link mr-sm-2" href="/signup">Registreren <i class="fas fa-user-plus"></i></a>
 					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Inloggen <i class="fas fa-user"></i></a>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Inloggen <i class="fas fa-user"></i></a>
+						<form action="/login" method="POST" class="login dropdown-menu p-4">
+							<div class="form-group">
+								<label>Email address</label>
+								<input type="email" class="form-control" name="email" placeholder="email@voorbeeld.nl">
+							</div>
+							<div class="form-group">
+								<label>Password</label>
+								<input type="password" class="form-control" name="wachtwoord" placeholder="Wachtwoord">
+							</div>
+							<p class="errormessage"> <%=message %> <p>
+							<button type="submit" class="btn btn-secondary">Sign in</button>
+							</form>
 					</li>
 				</ul>
 			</div>
