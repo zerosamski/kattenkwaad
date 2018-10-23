@@ -27,7 +27,7 @@ _11/10/2018_
 - Added a location filter
 
 19/10/2018_
-- Login functionality added
+- Dropdown Login functionality added
 
 _22/10/2018_
 - Added jQuery price filter
@@ -38,7 +38,6 @@ _22/10/2018_
 
 - Display cat sitters profiles to browse
 - Filter options for area and price
-- Option to edit profile
 
 ### Future to do’s
 
