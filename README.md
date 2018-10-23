@@ -62,4 +62,4 @@ _22/10/2018_
 
 ## Authors
 
-* ** Samuel Mulkens **
+Samuel Mulkens
